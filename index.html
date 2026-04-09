@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Montserrat:wght@300;400;500;600;700;800;900&family=Oswald:wght@400;500;600;700&family=Permanent+Marker&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <style>
 :root{--bg0:#0c0c0c;--bg1:#141414;--bg2:#1a1a1a;--bg3:#222;--bgH:#2a2a2a;--bdr:#2e2e2e;--tx:#d8d3ce;--txD:#7a7572;--txM:#4a4644;--ac:#e63946;--acH:#f04957;--r:6px}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -189,14 +190,14 @@ input[type="range"]::-moz-range-thumb{width:11px;height:11px;border-radius:50%;b
 <header>
 <h1>FIVE PINTS IN <span>Flyer Studio</span></h1>
 <div class="hdr-act">
-  <button class="btn btn-g btn-i btn-s" id="btn-undo" title="Undo (Ctrl+Z)" disabled>&#8630;</button>
-  <button class="btn btn-g btn-i btn-s" id="btn-redo" title="Redo (Ctrl+Shift+Z)" disabled>&#8631;</button>
+  <button class="btn btn-g btn-i btn-s" id="btn-undo" title="Undo (Ctrl+Z)" disabled><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg></button>
+  <button class="btn btn-g btn-i btn-s" id="btn-redo" title="Redo (Ctrl+Shift+Z)" disabled><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.13-9.36L23 10"/></svg></button>
   <div class="hdr-sep"></div>
   <button class="btn btn-g" id="btn-tpl">Templates</button>
   <button class="btn btn-g" id="btn-sf">Saved Flyers</button>
   <button class="btn btn-g" id="btn-nf">+ New</button>
   <div class="hdr-sep"></div>
-  <button class="btn btn-g btn-i btn-s" id="btn-kb" title="Keyboard Shortcuts">?</button>
+  <button class="btn btn-g btn-i btn-s" id="btn-kb" title="Keyboard Shortcuts"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="6" y1="8" x2="6" y2="8"/><line x1="10" y1="8" x2="10" y2="8"/><line x1="14" y1="8" x2="14" y2="8"/><line x1="18" y1="8" x2="18" y2="8"/><line x1="6" y1="12" x2="6" y2="12"/><line x1="10" y1="12" x2="10" y2="12"/><line x1="14" y1="12" x2="14" y2="12"/><line x1="18" y1="12" x2="18" y2="12"/><line x1="8" y1="16" x2="16" y2="16"/></svg></button>
 </div>
 </header>
 <div id="mob-tabs">
@@ -275,7 +276,7 @@ input[type="range"]::-moz-range-thumb{width:11px;height:11px;border-radius:50%;b
 <div class="fs"><h3>Gig Details</h3>
 <div class="vr"><select id="f-venuePreset"><option value="">-- Saved Venues --</option></select><button class="btn btn-s btn-g btn-i" id="btn-sv" title="Save venue">&#9733;</button></div>
 <div class="fg"><label>Date</label><input type="date" id="f-date"></div>
-<div class="fr"><div class="fg"><label>Doors</label><input type="text" id="f-doors" placeholder="20:00"></div><div class="fg"><label>Price</label><input type="text" id="f-price" placeholder="Free / EUR 10"></div></div>
+<div class="fr"><div class="fg"><label>Doors</label><input type="text" id="f-doors" placeholder="20:00"></div><div class="fg" style="max-width:100px"><label>Label</label><input type="text" id="f-doorsLabel" placeholder="DOORS"></div><div class="fg"><label>Price</label><input type="text" id="f-price" placeholder="Free / EUR 10"></div></div>
 <div class="fg"><label>Venue Name</label><input type="text" id="f-venue" placeholder="The Rock Pub"></div>
 <div class="fg"><label>Address</label><input type="text" id="f-address" placeholder="123 Main Street, City"></div>
 <!-- QR CODE -->
@@ -298,13 +299,13 @@ input[type="range"]::-moz-range-thumb{width:11px;height:11px;border-radius:50%;b
 <!-- SOCIAL -->
 <div class="fs"><h3>Social Media</h3>
 <div class="soc-row" style="margin-bottom:6px">
-  <button class="soc-icon-btn on" id="s1-ig" onclick="setSocIcon(1,'instagram')" title="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/></svg></button>
-  <button class="soc-icon-btn" id="s1-fb" onclick="setSocIcon(1,'facebook')" title="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><text x="12" y="17" text-anchor="middle" font-size="14" font-weight="700" fill="currentColor" stroke="none">f</text></svg></button>
+  <button class="soc-icon-btn on" id="s1-ig" onclick="setSocIcon(1,'instagram')" title="Instagram"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5M12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10m0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6"/></svg></button>
+  <button class="soc-icon-btn" id="s1-fb" onclick="setSocIcon(1,'facebook')" title="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3l-.5 3H13v6.95c5.05-.5 9-4.76 9-9.95"/></svg></button>
   <div class="fg" style="margin:0"><input type="text" id="f-social1" placeholder="@fivepintsin"></div>
 </div>
 <div class="soc-row">
-  <button class="soc-icon-btn on" id="s2-ig" onclick="setSocIcon(2,'instagram')" title="Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/></svg></button>
-  <button class="soc-icon-btn" id="s2-fb" onclick="setSocIcon(2,'facebook')" title="Facebook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><text x="12" y="17" text-anchor="middle" font-size="14" font-weight="700" fill="currentColor" stroke="none">f</text></svg></button>
+  <button class="soc-icon-btn on" id="s2-ig" onclick="setSocIcon(2,'instagram')" title="Instagram"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5M12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10m0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6"/></svg></button>
+  <button class="soc-icon-btn" id="s2-fb" onclick="setSocIcon(2,'facebook')" title="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3l-.5 3H13v6.95c5.05-.5 9-4.76 9-9.95"/></svg></button>
   <div class="fg" style="margin:0"><input type="text" id="f-social2" placeholder="@venue"></div>
 </div></div>
 
@@ -360,7 +361,7 @@ const FONTS=[
   {id:'playfair',f:'"Playfair Display",Georgia,serif',w:'700',l:'Playfair Display'},
   {id:'marker',f:'"Permanent Marker",cursive',w:'400',l:'Permanent Marker'},
 ];
-const DFLT={bandName:'FIVE PINTS IN',slogan:'',date:'',doors:'',price:'',venue:'',address:'',social1:'',social2:'',
+const DFLT={bandName:'FIVE PINTS IN',slogan:'',date:'',doors:'',doorsLabel:'DOORS',price:'',venue:'',address:'',social1:'',social2:'',
   bandLogo:null,venueLogo:null,logoSize:100,logoX:50,logoY:8,vLogoSize:100,vLogoX:50,vLogoY:90,
   bgImage:null,bgDarken:50,bgBlur:0,bgFit:'cover',bgStyle:'none',bgClr:'red',bgFilter:'none',bgOverlay:false,bgOverlayOp:40,
   bgPanX:50,bgPanY:50,
@@ -402,7 +403,7 @@ function redo(){
 function syncAll(){syncForm();refUp('bl',S.bandLogo);refUp('vl',S.venueLogo);refBg();showEl('bl-ctrl',!!S.bandLogo);showEl('vl-ctrl',!!S.venueLogo);syncQrCtrl();syncBgPan();bgCC.k='';schedRender();}
 function syncUndoBtn(){$('btn-undo').disabled=histIdx<=0;$('btn-redo').disabled=histIdx>=hist.length-1;}
 
-const TF=['bandName','slogan','date','doors','price','venue','address','social1','social2','qrUrl'];
+const TF=['bandName','slogan','date','doors','doorsLabel','price','venue','address','social1','social2','qrUrl'];
 const RF=['logoSize','logoX','logoY','vLogoSize','vLogoX','vLogoY','bgDarken','bgBlur','bgOverlayOp','bgPanX','bgPanY','textBandSize','textBandY','textDateSize','textDateY','textVenueSize','textVenueY','qrSize','qrX','qrY'];
 const SF=['bgFit','bgFilter','bandFont','dateFont','venueFont'];
 
@@ -762,230 +763,28 @@ function srand(seed){let s=seed;return()=>{s=(s*16807)%2147483647;return(s-1)/21
 function getFont(id){return FONTS.find(f=>f.id===id)||FONTS[0];}
 
 // ═══════════════════════════════════════
-//  QR CODE GENERATOR (lightweight)
+//  QR CODE (via qrcode-generator CDN)
 // ═══════════════════════════════════════
-const QR=(function(){
-  // Simplified QR code generator for alphanumeric/byte mode
-  // Generates version 2-6 QR codes (up to ~134 chars)
-  const EC_L=1;
-  function generate(text){
-    if(!text)return null;
-    // Use canvas-based approach with a tiny inline encoder
-    // For reliability, we use a proven algorithm
-    const mods=encode(text);
-    return mods;
-  }
-  function encode(text){
-    const size=Math.max(21,Math.ceil(text.length/8)*2+21);
-    // Fallback: create a simple dot-matrix representation
-    // For production we'd use a full QR library, but this creates a scannable pattern
-    const bytes=[];for(let i=0;i<text.length;i++)bytes.push(text.charCodeAt(i));
-    const n=Math.ceil(Math.sqrt(bytes.length*8))+4;
-    const grid=Array.from({length:n},()=>Array(n).fill(0));
-    // Encode bytes as binary dots
-    let bit=0;
-    for(let b of bytes){
-      for(let i=7;i>=0;i--){
-        const r=Math.floor(bit/n),c=bit%n;
-        if(r<n)grid[r][c]=(b>>i)&1;
-        bit++;
-      }
-    }
-    return grid;
-  }
-  return{generate};
-})();
-
-// Better QR: use a proper generation via the canvas-based qrcode approach
 function makeQRCanvas(text,size){
-  // We'll generate a QR code using error-correction encoding
-  // For simplicity and reliability, we'll create an SVG-path based QR using a proven JS method
   const c=document.createElement('canvas');
   c.width=c.height=size;
   const ctx=c.getContext('2d');
   ctx.fillStyle='#fff';ctx.fillRect(0,0,size,size);
-
   if(!text)return c;
-
-  // Generate QR matrix using the established bit-matrix approach
-  const matrix=generateQRMatrix(text);
-  if(!matrix)return c;
-
-  const mods=matrix.length;
-  const cellSize=size/mods;
-  ctx.fillStyle='#000';
-  for(let r=0;r<mods;r++){
-    for(let c2=0;c2<mods;c2++){
-      if(matrix[r][c2])ctx.fillRect(c2*cellSize,r*cellSize,Math.ceil(cellSize),Math.ceil(cellSize));
-    }
-  }
-  return c;
-}
-
-// QR Matrix Generator — Version 1-4 byte-mode with L error correction
-function generateQRMatrix(data){
-  // Encode in byte mode, version auto-select (1-6)
-  const bytes=new TextEncoder().encode(data);
-  const len=bytes.length;
-  // Version capacities for EC level L (byte mode)
-  const caps=[0,17,32,53,78,106,134];
-  let ver=1;while(ver<=6&&caps[ver]<len)ver++;
-  if(ver>6)ver=6; // truncate if too long
-
-  const size=17+ver*4;
-  const grid=Array.from({length:size},()=>Array(size).fill(null));
-  const mask=Array.from({length:size},()=>Array(size).fill(false));
-
-  // Place finder patterns
-  placeFinder(grid,mask,0,0);
-  placeFinder(grid,mask,size-7,0);
-  placeFinder(grid,mask,0,size-7);
-
-  // Timing patterns
-  for(let i=8;i<size-8;i++){
-    if(grid[6][i]===null){grid[6][i]=i%2===0?1:0;mask[6][i]=true;}
-    if(grid[i][6]===null){grid[i][6]=i%2===0?1:0;mask[i][6]=true;}
-  }
-
-  // Dark module
-  grid[size-8][8]=1;mask[size-8][8]=true;
-
-  // Alignment pattern for version >= 2
-  if(ver>=2){
-    const pos=getAlignPos(ver);
-    for(let r of pos)for(let c of pos){
-      if(grid[r][c]!==null)continue;
-      placeAlign(grid,mask,r,c);
-    }
-  }
-
-  // Reserve format info areas
-  reserveFormat(grid,mask,size);
-
-  // Encode data
-  const dataBits=encodeData(bytes,ver);
-
-  // Place data bits
-  placeData(grid,mask,dataBits,size);
-
-  // Apply mask pattern 0 (checkerboard)
-  for(let r=0;r<size;r++)for(let c=0;c<size;c++){
-    if(!mask[r][c]&&grid[r][c]!==null){
-      if((r+c)%2===0)grid[r][c]^=1;
-    }else if(!mask[r][c]&&grid[r][c]===null){
-      grid[r][c]=(r+c)%2===0?0:1;
-    }
-  }
-
-  // Write format info (mask 0, EC level L)
-  writeFormat(grid,size,0,EC_L);
-
-  // Fill any remaining nulls
-  for(let r=0;r<size;r++)for(let c=0;c<size;c++){
-    if(grid[r][c]===null)grid[r][c]=0;
-  }
-
-  return grid;
-}
-
-function placeFinder(g,m,r,c){
-  for(let dr=-1;dr<=7;dr++)for(let dc=-1;dc<=7;dc++){
-    const rr=r+dr,cc=c+dc;
-    if(rr<0||cc<0||rr>=g.length||cc>=g.length)continue;
-    if(dr===-1||dc===-1||dr===7||dc===7)
-      {g[rr][cc]=0;m[rr][cc]=true;}
-    else if(dr===0||dr===6||dc===0||dc===6)
-      {g[rr][cc]=1;m[rr][cc]=true;}
-    else if(dr>=2&&dr<=4&&dc>=2&&dc<=4)
-      {g[rr][cc]=1;m[rr][cc]=true;}
-    else{g[rr][cc]=0;m[rr][cc]=true;}
-  }
-}
-
-function placeAlign(g,m,cr,cc){
-  for(let dr=-2;dr<=2;dr++)for(let dc=-2;dc<=2;dc++){
-    const r=cr+dr,c=cc+dc;
-    if(r<0||c<0||r>=g.length||c>=g.length)continue;
-    if(Math.abs(dr)===2||Math.abs(dc)===2)g[r][c]=1;
-    else if(dr===0&&dc===0)g[r][c]=1;
-    else g[r][c]=0;
-    m[r][c]=true;
-  }
-}
-
-function getAlignPos(ver){
-  const t=[[],[],[6,18],[6,22],[6,26],[6,30],[6,34]];
-  return t[ver]||[];
-}
-
-function reserveFormat(g,m,n){
-  // Row 8 and column 8
-  for(let i=0;i<9;i++){
-    if(i<n&&!m[8][i]){g[8][i]=0;m[8][i]=true;}
-    if(i<n&&!m[i][8]){g[i][8]=0;m[i][8]=true;}
-  }
-  for(let i=0;i<8;i++){
-    if(!m[8][n-1-i]){g[8][n-1-i]=0;m[8][n-1-i]=true;}
-    if(!m[n-1-i][8]){g[n-1-i][8]=0;m[n-1-i][8]=true;}
-  }
-}
-
-function encodeData(bytes,ver){
-  const bits=[];
-  // Mode indicator: byte (0100)
-  bits.push(0,1,0,0);
-  // Character count (8 bits for ver 1-9)
-  const len=bytes.length;
-  for(let i=7;i>=0;i--)bits.push((len>>i)&1);
-  // Data
-  for(const b of bytes)for(let i=7;i>=0;i--)bits.push((b>>i)&1);
-  // Terminator
-  bits.push(0,0,0,0);
-  // Pad to 8-bit boundary
-  while(bits.length%8!==0)bits.push(0);
-  // Pad codewords
-  const totalBits=getDataBits(ver);
-  let pad=0;
-  while(bits.length<totalBits){
-    bits.push(...(pad%2===0?[1,1,1,0,1,1,0,0]:[0,0,0,1,0,0,0,1]));
-    pad++;
-  }
-  return bits.slice(0,totalBits);
-}
-
-function getDataBits(ver){
-  // Data codewords * 8 for EC level L
-  const cw=[0,19,34,55,80,108,136];
-  return(cw[ver]||19)*8;
-}
-
-function placeData(g,m,bits,n){
-  let idx=0,upward=true;
-  for(let col=n-1;col>=1;col-=2){
-    if(col===6)col=5; // skip timing column
-    const rows=upward?Array.from({length:n},(_,i)=>n-1-i):Array.from({length:n},(_,i)=>i);
-    for(const row of rows){
-      for(let dc=0;dc<=1;dc++){
-        const c=col-dc;
-        if(c<0||c>=n)continue;
-        if(m[row][c])continue;
-        g[row][c]=idx<bits.length?bits[idx]:0;
-        idx++;
+  try{
+    const qr=qrcode(0,'L');
+    qr.addData(text);
+    qr.make();
+    const mods=qr.getModuleCount();
+    const cellSize=size/mods;
+    ctx.fillStyle='#000';
+    for(let r=0;r<mods;r++){
+      for(let col=0;col<mods;col++){
+        if(qr.isDark(r,col))ctx.fillRect(col*cellSize,r*cellSize,Math.ceil(cellSize),Math.ceil(cellSize));
       }
     }
-    upward=!upward;
-  }
-}
-
-function writeFormat(g,n,maskPat,ecl){
-  // Pre-computed format strings for mask 0, EC level L
-  const formatBits=[1,0,1,0,1,0,0,0,0,0,1,0,0,1,0];
-  const positions1=[[8,0],[8,1],[8,2],[8,3],[8,4],[8,5],[8,7],[8,8],[7,8],[5,8],[4,8],[3,8],[2,8],[1,8],[0,8]];
-  const positions2=[[n-1,8],[n-2,8],[n-3,8],[n-4,8],[n-5,8],[n-6,8],[n-7,8],[8,n-8],[8,n-7],[8,n-6],[8,n-5],[8,n-4],[8,n-3],[8,n-2],[8,n-1]];
-  for(let i=0;i<15;i++){
-    const [r1,c1]=positions1[i];if(r1<n&&c1<n)g[r1][c1]=formatBits[i];
-    const [r2,c2]=positions2[i];if(r2<n&&c2<n)g[r2][c2]=formatBits[i];
-  }
+  }catch(e){console.warn('QR generation failed:',e);}
+  return c;
 }
 
 // ═══════════════════════════════════════
@@ -1056,17 +855,28 @@ function getStyledBg(style,w,h,clr){
 
 // ═══ SOCIAL ICON DRAWING ═══
 function drawIGIcon(ctx,x,y,sz,col){
-  ctx.save();ctx.strokeStyle=col;ctx.fillStyle=col;ctx.lineWidth=sz*.07;
-  rR(ctx,x-sz/2,y-sz/2,sz,sz,sz*.22);ctx.stroke();
-  ctx.beginPath();ctx.arc(x,y,sz*.28,0,Math.PI*2);ctx.stroke();
-  ctx.beginPath();ctx.arc(x+sz*.25,y-sz*.25,sz*.06,0,Math.PI*2);ctx.fill();
+  ctx.save();ctx.strokeStyle=col;ctx.fillStyle='transparent';ctx.lineWidth=sz*.08;
+  const r=sz*.24,hw=sz/2;
+  // Outer rounded rect
+  rR(ctx,x-hw,y-hw,sz,sz,r);ctx.stroke();
+  // Lens circle
+  ctx.beginPath();ctx.arc(x,y,sz*.26,0,Math.PI*2);ctx.stroke();
+  // Flash dot
+  ctx.fillStyle=col;ctx.beginPath();ctx.arc(x+sz*.27,y-sz*.27,sz*.07,0,Math.PI*2);ctx.fill();
   ctx.restore();
 }
 function drawFBIcon(ctx,x,y,sz,col){
-  ctx.save();ctx.strokeStyle=col;ctx.fillStyle=col;ctx.lineWidth=sz*.07;
-  rR(ctx,x-sz/2,y-sz/2,sz,sz,sz*.22);ctx.stroke();
-  ctx.font=`700 ${sz*.6}px sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.fillText('f',x+sz*.02,y+sz*.04);ctx.restore();
+  // Render to temp canvas to avoid compositing issues on main canvas
+  const tmp=document.createElement('canvas');
+  const pad=4;tmp.width=tmp.height=sz+pad*2;
+  const tc=tmp.getContext('2d');
+  const cx=sz/2+pad,cy=sz/2+pad;
+  tc.fillStyle=col;
+  tc.beginPath();tc.arc(cx,cy,sz/2,0,Math.PI*2);tc.fill();
+  tc.globalCompositeOperation='destination-out';
+  tc.font=`700 ${sz*.65}px "Montserrat",sans-serif`;tc.textAlign='center';tc.textBaseline='middle';
+  tc.fillText('f',cx+sz*.04,cy+sz*.06);
+  ctx.drawImage(tmp,x-sz/2-pad,y-sz/2-pad);
 }
 
 // ═══════════════════════════════════════
@@ -1166,7 +976,7 @@ async function renderFlyer(ctx,w,h,d){
   if(ctx.letterSpacing!==undefined)ctx.letterSpacing=(3*s*vScale)+'px';ctx.fillText(d.venue.toUpperCase(),cx,vy);
   if(ctx.letterSpacing!==undefined)ctx.letterSpacing='0px';vy+=vFS*.55+gap;}
   if(d.address){const aFS=Math.min(11*s,cW*.025)*vScale;ctx.font=`300 ${aFS}px "Montserrat",sans-serif`;ctx.fillStyle=PAL.muted;ctx.fillText(d.address,cx,vy);vy+=aFS+gap*1.5;}
-  const pts=[];if(d.doors)pts.push('DOORS '+d.doors);if(d.price)pts.push(d.price.toUpperCase());
+  const pts=[];if(d.doors)pts.push((d.doorsLabel||'DOORS')+' '+d.doors);if(d.price)pts.push(d.price.toUpperCase());
   if(pts.length){const pFS=Math.min(12*s,cW*.028)*vScale;ctx.font=`600 ${pFS}px "Montserrat",sans-serif`;ctx.fillStyle=d.venueColor||PAL.text;
   if(ctx.letterSpacing!==undefined)ctx.letterSpacing=(2*s)+'px';ctx.fillText(pts.join('   |   '),cx,vy);if(ctx.letterSpacing!==undefined)ctx.letterSpacing='0px';vy+=pFS+gap*1.5;}
 
