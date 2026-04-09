@@ -866,17 +866,19 @@ function drawIGIcon(ctx,x,y,sz,col){
   ctx.restore();
 }
 function drawFBIcon(ctx,x,y,sz,col){
-  // Render to temp canvas to avoid compositing issues on main canvas
+  // Render to 2x temp canvas for crisp output, then draw back at 1x
+  const scale=2,pad=4;
   const tmp=document.createElement('canvas');
-  const pad=4;tmp.width=tmp.height=sz+pad*2;
+  tmp.width=tmp.height=(sz+pad*2)*scale;
   const tc=tmp.getContext('2d');
+  tc.scale(scale,scale);
   const cx=sz/2+pad,cy=sz/2+pad;
   tc.fillStyle=col;
   tc.beginPath();tc.arc(cx,cy,sz/2,0,Math.PI*2);tc.fill();
   tc.globalCompositeOperation='destination-out';
-  tc.font=`700 ${sz*.65}px "Montserrat",sans-serif`;tc.textAlign='center';tc.textBaseline='middle';
-  tc.fillText('f',cx+sz*.04,cy+sz*.06);
-  ctx.drawImage(tmp,x-sz/2-pad,y-sz/2-pad);
+  tc.font=`700 ${sz*.6}px sans-serif`;tc.textAlign='center';tc.textBaseline='alphabetic';
+  tc.fillText('f',cx,cy+sz*.2);
+  ctx.drawImage(tmp,0,0,tmp.width,tmp.height,x-sz/2-pad,y-sz/2-pad,sz+pad*2,sz+pad*2);
 }
 
 // ═══════════════════════════════════════
