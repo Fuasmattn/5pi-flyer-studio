@@ -44,7 +44,7 @@
   --glass-border:rgba(0,0,0,.06);
   /* Canvas */
   --canvas-dot:rgba(0,0,0,.05);
-  --canvas-shadow:0 2px 8px rgba(0,0,0,.08),0 12px 32px -4px rgba(0,0,0,.18),0 40px 80px -8px rgba(0,0,0,.22);
+  --canvas-shadow:0 0 0 1px rgba(0,0,0,.06),0 6px 16px rgba(0,0,0,.15),0 24px 56px rgba(0,0,0,.28),0 60px 120px 10px rgba(0,0,0,.22);
   /* Shadows */
   --shadow-soft:rgba(0,0,0,.04);
   --shadow-med:rgba(0,0,0,.08);
