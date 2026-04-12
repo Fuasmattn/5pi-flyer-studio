@@ -43,6 +43,7 @@
 <body>
 <header>
 <div class="hdr-left">
+  <button class="burger" id="burger" title="Menu"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
   <h1>5PI Flyer Studio</h1>
   <nav class="hdr-nav">
     <button class="hdr-link" id="btn-tpl">Templates</button>
@@ -53,10 +54,19 @@
 <div class="hdr-act">
   <button class="btn btn-g btn-i btn-s" id="btn-nf" title="New flyer"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
   <button class="btn btn-g btn-i btn-s" id="btn-theme" title="Toggle theme"><svg id="theme-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button>
-  <button class="btn btn-g btn-i btn-s" id="btn-kb" title="Keyboard Shortcuts"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="6" y1="8" x2="6" y2="8"/><line x1="10" y1="8" x2="10" y2="8"/><line x1="14" y1="8" x2="14" y2="8"/><line x1="18" y1="8" x2="18" y2="8"/><line x1="6" y1="12" x2="6" y2="12"/><line x1="10" y1="12" x2="10" y2="12"/><line x1="14" y1="12" x2="14" y2="12"/><line x1="18" y1="12" x2="18" y2="12"/><line x1="8" y1="16" x2="16" y2="16"/></svg></button>
-  <div class="hdr-sep"></div>
+  <button class="btn btn-g btn-i btn-s hdr-desk" id="btn-kb" title="Keyboard Shortcuts"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="6" y1="8" x2="6" y2="8"/><line x1="10" y1="8" x2="10" y2="8"/><line x1="14" y1="8" x2="14" y2="8"/><line x1="18" y1="8" x2="18" y2="8"/><line x1="6" y1="12" x2="6" y2="12"/><line x1="10" y1="12" x2="10" y2="12"/><line x1="14" y1="12" x2="14" y2="12"/><line x1="18" y1="12" x2="18" y2="12"/><line x1="8" y1="16" x2="16" y2="16"/></svg></button>
+  <div class="hdr-sep hdr-desk"></div>
   <button class="btn btn-g btn-i btn-s" id="btn-sfl" title="Save flyer"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg></button>
-  <button class="btn btn-p" id="btn-dl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download</button>
+  <button class="btn btn-p" id="btn-dl"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span>Download</span></button>
+</div>
+<!-- Mobile dropdown menu -->
+<div class="burger-menu" id="burger-menu">
+  <button class="burger-item" id="bm-tpl"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>Templates</button>
+  <button class="burger-item" id="bm-sf"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>Saved Flyers</button>
+  <button class="burger-item" id="bm-assets"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>Assets</button>
+  <div class="burger-sep"></div>
+  <button class="burger-item" id="bm-nf"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>New Flyer</button>
+  <button class="burger-item" id="bm-kb"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="6" y1="8" x2="6" y2="8"/><line x1="10" y1="8" x2="10" y2="8"/><line x1="14" y1="8" x2="14" y2="8"/><line x1="18" y1="8" x2="18" y2="8"/><line x1="8" y1="16" x2="16" y2="16"/></svg>Shortcuts</button>
 </div>
 </header>
 <div id="mob-tabs">
@@ -66,21 +76,22 @@
 <main>
 <aside id="ed">
 
-<!-- SIDEBAR TABS -->
-<div class="ed-tabs" id="ed-tabs">
-  <button class="ed-tab on" data-tab="content" title="Content">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h7"/><path d="M4 12h7"/><path d="M4 17h5"/><path d="M15.5 5.5l-2 2"/><path d="M18 3a1.5 1.5 0 0 1 0 3L13 11l-3 1 1-3 5-5a1.5 1.5 0 0 1 2-1z"/></svg>
-    <span>Content</span>
+<!-- VERTICAL ICON SIDEBAR + CONTENT -->
+<div class="ed-rail" id="ed-tabs">
+  <button class="ed-rail-btn on" data-tab="content" title="Content">
+    <!-- Text/content: document with lines -->
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>
   </button>
-  <button class="ed-tab" data-tab="bg" title="Canvas">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r="2.5"/><circle cx="6.5" cy="13.5" r="2.5"/><circle cx="17.5" cy="13.5" r="2.5"/><circle cx="8" cy="8" r="2.5"/><circle cx="16" cy="8" r="2.5"/><path d="M12 2a10 10 0 0 0 0 20c1.1 0 2-.9 2-2v-.5c0-.5-.2-1-.5-1.4-.3-.3-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.3c3 0 4.7-2 4.7-4.5A10 10 0 0 0 12 2z"/></svg>
-    <span>Canvas</span>
+  <button class="ed-rail-btn" data-tab="bg" title="Canvas">
+    <!-- Canvas/background: image/landscape -->
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
   </button>
-  <button class="ed-tab" data-tab="style" title="Style">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-    <span>Style</span>
+  <button class="ed-rail-btn" data-tab="style" title="Style">
+    <!-- Style: sliders/adjustments -->
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
   </button>
 </div>
+<div class="ed-content" id="ed-content">
 
 <!-- ═══ TAB: CONTENT ═══ -->
 <div class="ed-panel on" data-panel="content">
@@ -149,6 +160,9 @@
   <div class="stc" data-s="grunge">Grunge</div><div class="stc" data-s="neon-grid">Neon Grid</div><div class="stc" data-s="embers">Embers</div>
   <div class="stc" data-s="bokeh">Bokeh</div><div class="stc" data-s="molten">Molten</div><div class="stc" data-s="halftone">Halftone</div>
 </div>
+<div class="fg"><label>Background Color</label>
+  <div class="clr-pick-row"><input type="color" id="f-bgSolidClr" value="#1a1a2e"><input type="text" id="f-bgSolidClrHex" value="#1a1a2e" maxlength="7" class="clr-hex-input"></div>
+</div>
 <div class="fg"><label>Style Color</label></div>
 <div class="sw-row" id="bg-clr-row"></div>
 <div class="or-div">or upload</div>
@@ -171,7 +185,7 @@
   </div>
 </div>
 <label class="chk"><input type="checkbox" id="f-bgOverlay"> Overlay style on image</label>
-<div class="sg" id="overlay-op-wrap" style="display:none"><div class="sh"><label>Overlay Opacity</label><span class="sv" id="val-bgOverlayOp">40%</span></div><input type="range" id="f-bgOverlayOp" min="5" max="100" value="40"></div>
+<div class="sg" id="overlay-op-wrap" style="display:none"><div class="sh"><label>Overlay Intensity</label><span class="sv" id="val-bgOverlayOp">40%</span></div><input type="range" id="f-bgOverlayOp" min="5" max="100" value="40"></div>
 </div>
 
 </div><!-- /ed-panel bg -->
@@ -211,6 +225,7 @@
 
 </div><!-- /ed-panel style -->
 
+</div><!-- /ed-content -->
 </aside>
 <div id="pp">
 <div id="fb" class="fb-hidden"><button class="fmt on" data-fmt="ig-post">IG Post</button><button class="fmt" data-fmt="ig-story">IG Story</button><button class="fmt" data-fmt="fb-event">FB Event</button><button class="fmt" data-fmt="a5">A5 Print</button></div>
