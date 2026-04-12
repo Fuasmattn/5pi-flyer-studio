@@ -44,15 +44,14 @@
 <header>
 <h1>FIVE PINTS IN <span>Flyer Studio</span></h1>
 <div class="hdr-act">
-  <button class="btn btn-g btn-i btn-s" id="btn-undo" title="Undo (Ctrl+Z)" disabled><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg></button>
-  <button class="btn btn-g btn-i btn-s" id="btn-redo" title="Redo (Ctrl+Shift+Z)" disabled><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.13-9.36L23 10"/></svg></button>
-  <div class="hdr-sep"></div>
   <button class="btn btn-g" id="btn-tpl">Templates</button>
   <button class="btn btn-g" id="btn-sf">Saved Flyers</button>
   <button class="btn btn-g" id="btn-nf">+ New</button>
   <div class="hdr-sep"></div>
   <button class="btn btn-g btn-i btn-s" id="btn-theme" title="Toggle theme"><svg id="theme-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button>
   <button class="btn btn-g btn-i btn-s" id="btn-kb" title="Keyboard Shortcuts"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="6" y1="8" x2="6" y2="8"/><line x1="10" y1="8" x2="10" y2="8"/><line x1="14" y1="8" x2="14" y2="8"/><line x1="18" y1="8" x2="18" y2="8"/><line x1="6" y1="12" x2="6" y2="12"/><line x1="10" y1="12" x2="10" y2="12"/><line x1="14" y1="12" x2="14" y2="12"/><line x1="18" y1="12" x2="18" y2="12"/><line x1="8" y1="16" x2="16" y2="16"/></svg></button>
+  <div class="hdr-sep"></div>
+  <button class="btn btn-p" id="btn-dl">Download</button>
 </div>
 </header>
 <div id="mob-tabs">
@@ -209,8 +208,16 @@
 
 </aside>
 <div id="pp">
-<div id="fb"><button class="fmt on" data-fmt="ig-post">IG Post</button><button class="fmt" data-fmt="ig-story">IG Story</button><button class="fmt" data-fmt="fb-event">FB Event</button><button class="fmt" data-fmt="a5">A5 Print</button></div>
+<div id="fb" class="fb-hidden"><button class="fmt on" data-fmt="ig-post">IG Post</button><button class="fmt" data-fmt="ig-story">IG Story</button><button class="fmt" data-fmt="fb-event">FB Event</button><button class="fmt" data-fmt="a5">A5 Print</button></div>
 <div id="cw"><canvas id="cv"></canvas><div id="zoom-badge">100%</div></div>
+<div id="cv-toolbar">
+  <button class="cv-tb-btn" id="tb-undo" title="Undo (Ctrl+Z)" disabled><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg></button>
+  <button class="cv-tb-btn" id="tb-redo" title="Redo (Ctrl+Shift+Z)" disabled><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.13-9.36L23 10"/></svg></button>
+  <div class="cv-tb-sep"></div>
+  <button class="cv-tb-btn cv-tb-zoom" id="tb-zoom" title="Zoom level"><span id="tb-zoom-val">100%</span><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+  <div class="cv-tb-sep"></div>
+  <button class="cv-tb-btn" id="tb-fmt" title="Switch format"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></button>
+</div>
 <div id="ab">
   <button class="btn btn-p" id="btn-ex">Download PNG</button>
   <button class="btn btn-g" id="btn-ex-all">Download All</button>

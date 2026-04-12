@@ -56,7 +56,7 @@ function redo(){
   syncAll();histPaused=false;syncUndoBtn();saveDraft();toast('Redo');
 }
 function syncAll(){syncForm();refUp('bl',S.bandLogo);refUp('vl',S.venueLogo);refBg();showEl('bl-ctrl',!!S.bandLogo);showEl('vl-ctrl',!!S.venueLogo);syncQrCtrl();syncBgPan();bgCC.k='';schedRender();}
-function syncUndoBtn(){$('btn-undo').disabled=histIdx<=0;$('btn-redo').disabled=histIdx>=hist.length-1;}
+function syncUndoBtn(){$('tb-undo').disabled=histIdx<=0;$('tb-redo').disabled=histIdx>=hist.length-1;}
 
 const TF=['bandName','slogan','date','doors','doorsLabel','price','venue','address','social1','social2','qrUrl'];
 const RF=['logoSize','logoX','logoY','vLogoSize','vLogoX','vLogoY','bgDarken','bgBlur','bgOverlayOp','bgPanX','bgPanY','textBandSize','textBandY','textDateSize','textDateY','textVenueSize','textVenueY','qrSize','qrX','qrY','borderWidth'];
@@ -267,9 +267,31 @@ function bindAll(){
   $('btn-kb').addEventListener('click',()=>openMo('mo-kb'));
   $('mo-kb-x').addEventListener('click',()=>closeMo('mo-kb'));
   $('mo-kb').addEventListener('click',e=>{if(e.target.id==='mo-kb')closeMo('mo-kb');});
-  // Undo/Redo
-  $('btn-undo').addEventListener('click',undo);
-  $('btn-redo').addEventListener('click',redo);
+  // Undo/Redo (canvas toolbar)
+  $('tb-undo').addEventListener('click',undo);
+  $('tb-redo').addEventListener('click',redo);
+  // Format grid toggle
+  $('tb-fmt').addEventListener('click',()=>{
+    const fb=$('fb');fb.classList.toggle('fb-hidden');
+    $('tb-fmt').classList.toggle('on',!fb.classList.contains('fb-hidden'));
+  });
+  // Zoom button — reset zoom on click
+  $('tb-zoom').addEventListener('click',()=>{pvZoom=1;pvPanX=0;pvPanY=0;applyZoom();});
+  // Close format bar when clicking outside
+  document.addEventListener('click',e=>{
+    const fb=$('fb'),btn=$('tb-fmt');
+    if(!fb.classList.contains('fb-hidden')&&!fb.contains(e.target)&&!btn.contains(e.target)){
+      fb.classList.add('fb-hidden');btn.classList.remove('on');
+    }
+  });
+  // Download menu toggle
+  $('btn-dl').addEventListener('click',()=>{$('ab').classList.toggle('ab-show');});
+  document.addEventListener('click',e=>{
+    const ab=$('ab'),dl=$('btn-dl');
+    if(ab.classList.contains('ab-show')&&!ab.contains(e.target)&&!dl.contains(e.target)){
+      ab.classList.remove('ab-show');
+    }
+  });
   // Keyboard shortcuts
   document.addEventListener('keydown',handleKey);
   // Resize
@@ -386,6 +408,7 @@ function applyZoom(){
   cw.classList.toggle('zoomed',pvZoom>1);
   badge.textContent=Math.round(pvZoom*100)+'%';
   badge.classList.toggle('show',Math.abs(pvZoom-1)>.01);
+  const tbz=$('tb-zoom-val');if(tbz)tbz.textContent=Math.round(pvZoom*100)+'%';
 }
 
 // ── FILE UPLOADS ──
