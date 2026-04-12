@@ -284,14 +284,10 @@ function bindAll(){
       fb.classList.add('fb-hidden');btn.classList.remove('on');
     }
   });
-  // Download menu toggle
-  $('btn-dl').addEventListener('click',()=>{$('ab').classList.toggle('ab-show');});
-  document.addEventListener('click',e=>{
-    const ab=$('ab'),dl=$('btn-dl');
-    if(ab.classList.contains('ab-show')&&!ab.contains(e.target)&&!dl.contains(e.target)){
-      ab.classList.remove('ab-show');
-    }
-  });
+  // Download modal
+  $('btn-dl').addEventListener('click',()=>openMo('mo-dl'));
+  $('mo-dl-x').addEventListener('click',()=>closeMo('mo-dl'));
+  $('mo-dl').addEventListener('click',e=>{if(e.target.id==='mo-dl')closeMo('mo-dl');});
   // Keyboard shortcuts
   document.addEventListener('keydown',handleKey);
   // Resize
