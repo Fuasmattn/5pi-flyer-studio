@@ -261,6 +261,8 @@ function bindAll(){
   $('btn-exp-tpl').addEventListener('click',()=>exportBackup('templates'));
   $('btn-imp-tpl').addEventListener('click',()=>$('f-imp-tpl').click());
   $('f-imp-tpl').addEventListener('change',e=>{importBackup(e.target.files[0],'templates');e.target.value='';});
+  // Assets (placeholder)
+  $('btn-assets').addEventListener('click',()=>toast('Assets coming soon'));
   // Theme
   $('btn-theme').addEventListener('click',cycleTheme);
   // Shortcuts
@@ -460,7 +462,23 @@ function loadVen(){const v=venues[parseInt($('f-venuePreset').value)];if(!v)retu
 function saveVenue(){const n=S.venue.trim();if(!n){toast('Enter venue name first');return;}const e={name:n,address:S.address,logo:S.venueLogo,social:S.social2};const i=venues.findIndex(v=>v.name.toLowerCase()===n.toLowerCase());if(i>=0)venues[i]=e;else venues.push(e);dbSet('fpi_venues',venues,'venues');popVenues();toast(i>=0?'Updated':'Saved');}
 
 // ── SAVED FLYERS ──
-function saveCurFlyer(){const n=prompt('Flyer name:',`${S.venue||'Gig'} — ${S.date||'Draft'}`);if(!n)return;saved.push({id:Date.now()+'',name:n,at:new Date().toISOString(),data:{...S}});saveFly();toast('Saved');}
+async function saveCurFlyer(){
+  const n=prompt('Flyer name:',`${S.venue||'Gig'} — ${S.date||'Draft'}`);if(!n)return;
+  const thumb=await generateThumb(S);
+  saved.push({id:Date.now()+'',name:n,at:new Date().toISOString(),data:{...S},thumb});
+  saveFly();renderFL();toast('Saved');
+}
+async function generateThumb(data){
+  try{
+    const c=document.createElement('canvas');
+    const sz=200;const fmt=FMT[curF];
+    const ratio=fmt.w/fmt.h;
+    c.width=ratio>=1?sz:Math.round(sz*ratio);
+    c.height=ratio>=1?Math.round(sz/ratio):sz;
+    await renderFlyer(c.getContext('2d'),c.width,c.height,data);
+    return c.toDataURL('image/jpeg',0.6);
+  }catch(e){return null;}
+}
 function loadFlyer(id){const f=saved.find(f=>f.id===id);if(!f)return;Object.assign(S,f.data);syncAll();saveDraft();closeMo('mo-fl');toast('Loaded');}
 function duplicateFlyer(id){
   const f=saved.find(f=>f.id===id);if(!f)return;
@@ -474,15 +492,17 @@ function renderFL(){
   if(!saved.length){el.innerHTML='<div class="es">No saved flyers yet.</div>';return;}
   el.innerHTML=saved.map(f=>{
     const d=new Date(f.at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
-    return`<div class="si" onclick="loadFlyer('${f.id}')"><div class="si-i"><div class="si-n">${esc(f.name)}</div><div class="si-m">${d}</div></div><div class="si-a"><button class="btn btn-s btn-g" onclick="event.stopPropagation();duplicateFlyer('${f.id}')" title="Duplicate">Dup</button><button class="btn btn-s btn-d" onclick="event.stopPropagation();deleteFlyer('${f.id}')">Del</button></div></div>`;
+    const thumbHtml=f.thumb?`<img src="${f.thumb}" alt="${esc(f.name)}" style="width:100%;height:100%;object-fit:cover">`:`<span class="card-ph">${esc(f.name.charAt(0))}</span>`;
+    return`<div class="card" onclick="loadFlyer('${f.id}')"><div class="card-thumb">${thumbHtml}</div><div class="card-info"><div class="card-name">${esc(f.name)}</div><div class="card-meta">${d}</div><div class="card-acts"><button class="btn btn-s btn-g" onclick="event.stopPropagation();duplicateFlyer('${f.id}')">Dup</button><button class="btn btn-s btn-d" onclick="event.stopPropagation();deleteFlyer('${f.id}')">Del</button></div></div></div>`;
   }).join('');
 }
 
 // ── TEMPLATES ──
-function saveAsTemplate(){
+async function saveAsTemplate(){
   const n=prompt('Template name:',`${S.bgStyle!=='none'?S.bgStyle+' ':''}Layout`);if(!n)return;
   const d={...S,date:'',doors:'',price:'',venue:'',address:'',social1:'',social2:'',qrUrl:''};
-  templates.push({id:Date.now()+'',name:n,at:new Date().toISOString(),data:d});
+  const thumb=await generateThumb(d);
+  templates.push({id:Date.now()+'',name:n,at:new Date().toISOString(),data:d,thumb});
   saveTpls();renderTplList();toast('Template saved');
 }
 function loadTemplate(id){
@@ -498,7 +518,8 @@ function renderTplList(){
   if(!templates.length){el.innerHTML='<div class="es">No templates yet. Save your current layout as a template to reuse it.</div>';return;}
   el.innerHTML=templates.map(t=>{
     const d=new Date(t.at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
-    return`<div class="si" onclick="loadTemplate('${t.id}')"><div class="si-i"><div class="si-n">${esc(t.name)}</div><div class="si-m">${d}</div></div><div class="si-a"><button class="btn btn-s btn-d" onclick="event.stopPropagation();deleteTemplate('${t.id}')">Del</button></div></div>`;
+    const thumbHtml=t.thumb?`<img src="${t.thumb}" alt="${esc(t.name)}" style="width:100%;height:100%;object-fit:cover">`:`<span class="card-ph">${esc(t.name.charAt(0))}</span>`;
+    return`<div class="card" onclick="loadTemplate('${t.id}')"><div class="card-thumb">${thumbHtml}</div><div class="card-info"><div class="card-name">${esc(t.name)}</div><div class="card-meta">${d}</div><div class="card-acts"><button class="btn btn-s btn-d" onclick="event.stopPropagation();deleteTemplate('${t.id}')">Del</button></div></div></div>`;
   }).join('');
 }
 
