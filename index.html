@@ -573,9 +573,9 @@ const RF=['logoSize','logoX','logoY','vLogoSize','vLogoX','vLogoY','bgDarken','b
 const SF=['bgFit','bgFilter','bandFont','dateFont','venueFont'];
 
 // ── INIT ──
-document.addEventListener('DOMContentLoaded',()=>{
+document.addEventListener('DOMContentLoaded',async()=>{
   buildSwatches();buildFontSelects();buildBgClrRow();
-  loadStore();bindAll();popVenues();
+  await loadStore();bindAll();popVenues();
   refUp('bl',S.bandLogo);refUp('vl',S.venueLogo);refBg();
   showEl('bl-ctrl',S.bandLogo);showEl('vl-ctrl',S.venueLogo);
   syncSliders();syncChips();syncSwatches();syncOverlay();syncQrCtrl();syncBgPan();
@@ -629,36 +629,69 @@ function syncOverlay(){$('overlay-op-wrap').style.display=S.bgOverlay?'':'none';
 function syncQrCtrl(){$('qr-ctrl').style.display=S.qrUrl&&S.qrUrl.trim()?'':'none';}
 function syncBgPan(){$('bgPan-ctrl').style.display=(S.bgImage&&S.bgFit==='cover')?'':'none';}
 
-// ── STORAGE ──
-function loadStore(){
-  try{const d=localStorage.getItem('fpi_draft');if(d)Object.assign(S,JSON.parse(d));
-  venues=JSON.parse(localStorage.getItem('fpi_venues')||'[]');
-  saved=JSON.parse(localStorage.getItem('fpi_flyers')||'[]');
-  templates=JSON.parse(localStorage.getItem('fpi_tpls')||'[]');
-  const bl=localStorage.getItem('fpi_bandLogo');if(bl)S.bandLogo=bl;
-  const bg=localStorage.getItem('fpi_bgImage');if(bg)S.bgImage=bg;}catch(e){}
-  syncForm();
+// ── STORAGE (IndexedDB) ──
+const DB_NAME='fpi_studio',DB_VER=1,DB_STORE='kv';
+let db=null;
+function openDB(){
+  return new Promise((res,rej)=>{
+    const r=indexedDB.open(DB_NAME,DB_VER);
+    r.onupgradeneeded=()=>r.result.createObjectStore(DB_STORE);
+    r.onsuccess=()=>{db=r.result;res(db);};
+    r.onerror=()=>rej(r.error);
+  });
+}
+function idbGet(k){
+  return new Promise((res,rej)=>{
+    const tx=db.transaction(DB_STORE,'readonly');
+    const r=tx.objectStore(DB_STORE).get(k);
+    r.onsuccess=()=>res(r.result);
+    r.onerror=()=>rej(r.error);
+  });
+}
+function idbSet(k,v){
+  return new Promise((res,rej)=>{
+    const tx=db.transaction(DB_STORE,'readwrite');
+    const r=tx.objectStore(DB_STORE).put(v,k);
+    tx.oncomplete=()=>res(true);
+    tx.onerror=()=>rej(tx.error);
+  });
+}
+function idbDel(k){
+  return new Promise((res,rej)=>{
+    const tx=db.transaction(DB_STORE,'readwrite');
+    const r=tx.objectStore(DB_STORE).delete(k);
+    tx.oncomplete=()=>res();
+    tx.onerror=()=>rej(tx.error);
+  });
 }
 let quotaWarned=false;
-function isQuotaErr(e){return e&&(e.name==='QuotaExceededError'||e.name==='NS_ERROR_DOM_QUOTA_REACHED'||e.code===22||e.code===1014);}
-function lsSet(k,v,label){
-  try{localStorage.setItem(k,v);return true;}
-  catch(e){
-    if(isQuotaErr(e)){
-      if(!quotaWarned){toast('Storage full — export a backup and delete unused '+(label||'items'));quotaWarned=true;setTimeout(()=>{quotaWarned=false;},8000);}
-    }else{console.error('localStorage write failed',k,e);}
-    return false;
-  }
+function dbSet(k,v,label){
+  idbSet(k,v).catch(e=>{
+    if(!quotaWarned){toast('Storage full — export a backup and delete unused '+(label||'items'));quotaWarned=true;setTimeout(()=>{quotaWarned=false;},8000);}
+    else console.error('DB write failed',k,e);
+  });
+}
+async function loadStore(){
+  try{
+    await openDB();
+    const d=await idbGet('fpi_draft');if(d)Object.assign(S,d);
+    venues=await idbGet('fpi_venues')||[];
+    saved=await idbGet('fpi_flyers')||[];
+    templates=await idbGet('fpi_tpls')||[];
+    const bl=await idbGet('fpi_bandLogo');if(bl)S.bandLogo=bl;
+    const bg=await idbGet('fpi_bgImage');if(bg)S.bgImage=bg;
+  }catch(e){console.error('loadStore',e);}
+  syncForm();
 }
 function saveDraft(){
   const d={...S};delete d.bandLogo;delete d.bgImage;
-  lsSet('fpi_draft',JSON.stringify(d),'drafts');
-  if(S.bandLogo)lsSet('fpi_bandLogo',S.bandLogo,'images');else{try{localStorage.removeItem('fpi_bandLogo');}catch(e){}}
-  if(S.bgImage)lsSet('fpi_bgImage',S.bgImage,'images');else{try{localStorage.removeItem('fpi_bgImage');}catch(e){}}
+  dbSet('fpi_draft',d,'drafts');
+  if(S.bandLogo)dbSet('fpi_bandLogo',S.bandLogo,'images');else idbDel('fpi_bandLogo').catch(()=>{});
+  if(S.bgImage)dbSet('fpi_bgImage',S.bgImage,'images');else idbDel('fpi_bgImage').catch(()=>{});
   pushHist();
 }
-function saveFly(){lsSet('fpi_flyers',JSON.stringify(saved),'saved flyers');}
-function saveTpls(){lsSet('fpi_tpls',JSON.stringify(templates),'templates');}
+function saveFly(){dbSet('fpi_flyers',saved,'saved flyers');}
+function saveTpls(){dbSet('fpi_tpls',templates,'templates');}
 
 function syncForm(){
   TF.forEach(k=>{const e=$('f-'+k);if(e)e.value=S[k]||'';});
@@ -839,8 +872,8 @@ function applyZoom(){
 function setupFileUp(pre,sk,lsk,ctrl){
   const inp=$('f-'+(pre==='bl'?'bandLogo':'venueLogo')),area=$(pre+'-area'),clr=$(pre+'-clr');
   area.addEventListener('click',e=>{if(!clr.contains(e.target))inp.click();});
-  inp.addEventListener('change',async()=>{if(!inp.files[0])return;S[sk]=await f2d(inp.files[0]);if(lsk)lsSet(lsk,S[sk],'images');showEl(ctrl,true);saveDraft();refUp(pre,S[sk]);schedRender();});
-  clr.addEventListener('click',e=>{e.stopPropagation();S[sk]=null;inp.value='';if(lsk)localStorage.removeItem(lsk);showEl(ctrl,false);saveDraft();refUp(pre,null);schedRender();});
+  inp.addEventListener('change',async()=>{if(!inp.files[0])return;S[sk]=await f2d(inp.files[0]);if(lsk)dbSet(lsk,S[sk],'images');showEl(ctrl,true);saveDraft();refUp(pre,S[sk]);schedRender();});
+  clr.addEventListener('click',e=>{e.stopPropagation();S[sk]=null;inp.value='';if(lsk)idbDel(lsk).catch(()=>{});showEl(ctrl,false);saveDraft();refUp(pre,null);schedRender();});
 }
 function setupBgFileUp(){
   const inp=$('f-bgImage'),area=$('bg-area'),clr=$('bg-clr');
@@ -866,7 +899,7 @@ async function loadLogoUrl(which){
   toast('Loading...');
   try{
     const du=await fetchImgUrl(url);
-    if(which==='band'){S.bandLogo=du;lsSet('fpi_bandLogo',du,'images');showEl('bl-ctrl',true);refUp('bl',du);}
+    if(which==='band'){S.bandLogo=du;dbSet('fpi_bandLogo',du,'images');showEl('bl-ctrl',true);refUp('bl',du);}
     else{S.venueLogo=du;showEl('vl-ctrl',true);refUp('vl',du);}
     saveDraft();schedRender();toast('Image loaded');urlEl.value='';
   }catch(e){toast('Failed to load image');}
@@ -885,7 +918,7 @@ function setSocIcon(n,type){S['social'+n+'Icon']=type;syncChips();saveDraft();sc
 // ── VENUES ──
 function popVenues(){const s=$('f-venuePreset');s.innerHTML='<option value="">-- Saved Venues --</option>'+venues.map((v,i)=>`<option value="${i}">${v.name}</option>`).join('');}
 function loadVen(){const v=venues[parseInt($('f-venuePreset').value)];if(!v)return;S.venue=v.name;S.address=v.address||'';if(v.logo)S.venueLogo=v.logo;if(v.social)S.social2=v.social;syncForm();refUp('vl',S.venueLogo);showEl('vl-ctrl',!!S.venueLogo);saveDraft();schedRender();toast('Venue loaded');}
-function saveVenue(){const n=S.venue.trim();if(!n){toast('Enter venue name first');return;}const e={name:n,address:S.address,logo:S.venueLogo,social:S.social2};const i=venues.findIndex(v=>v.name.toLowerCase()===n.toLowerCase());if(i>=0)venues[i]=e;else venues.push(e);lsSet('fpi_venues',JSON.stringify(venues),'venues');popVenues();toast(i>=0?'Updated':'Saved');}
+function saveVenue(){const n=S.venue.trim();if(!n){toast('Enter venue name first');return;}const e={name:n,address:S.address,logo:S.venueLogo,social:S.social2};const i=venues.findIndex(v=>v.name.toLowerCase()===n.toLowerCase());if(i>=0)venues[i]=e;else venues.push(e);dbSet('fpi_venues',venues,'venues');popVenues();toast(i>=0?'Updated':'Saved');}
 
 // ── SAVED FLYERS ──
 function saveCurFlyer(){const n=prompt('Flyer name:',`${S.venue||'Gig'} — ${S.date||'Draft'}`);if(!n)return;saved.push({id:Date.now()+'',name:n,at:new Date().toISOString(),data:{...S}});saveFly();toast('Saved');}
@@ -978,7 +1011,7 @@ function importBackup(file,scope){
     if(scope==='all'){
       const names=new Set(venues.map(v=>v.name.toLowerCase()));
       incomingVenues.forEach(v=>{if(!v||!v.name)return;if(names.has(v.name.toLowerCase()))return;names.add(v.name.toLowerCase());venues.push(v);});
-      lsSet('fpi_venues',JSON.stringify(venues),'venues');popVenues();
+      dbSet('fpi_venues',venues,'venues');popVenues();
     }
     toast('Imported '+parts.join(', '));
   };
