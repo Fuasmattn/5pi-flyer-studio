@@ -35,7 +35,7 @@ let S={...DFLT};
 let drafts={}; // per-format state: { 'ig-post':{...}, 'ig-story':{...}, ... }
 const fmtParam=new URLSearchParams(location.search).get('fmt');
 let curF=(fmtParam&&FMT[fmtParam])?fmtParam:'ig-post';
-let venues=[],saved=[],templates=[],iC={},noiseC=null,bgCC={k:'',c:null},rT=null;
+let saved=[],templates=[],iC={},noiseC=null,bgCC={k:'',c:null},rT=null;
 
 // ── UNDO/REDO ──
 let hist=[],histIdx=-1,histPaused=false;
@@ -101,7 +101,7 @@ window.matchMedia('(prefers-color-scheme:dark)').addEventListener('change',()=>{
 // ── INIT ──
 document.addEventListener('DOMContentLoaded',async()=>{
   buildSwatches();buildFontSelects();buildBgClrRow();
-  await loadStore();await loadTheme();bindAll();popVenues();
+  await loadStore();await loadTheme();bindAll();
   refUp('bl',S.bandLogo);refUp('vl',S.venueLogo);refBg();
   showEl('bl-ctrl',S.bandLogo);showEl('vl-ctrl',S.venueLogo);
   syncSliders();syncChips();syncSwatches();syncOverlay();syncQrCtrl();syncBgPan();
@@ -216,7 +216,6 @@ async function loadStore(){
     }
     // Load the state for current format
     if(drafts[curF])Object.assign(S,drafts[curF]);
-    venues=await idbGet('fpi_venues')||[];
     saved=await idbGet('fpi_flyers')||[];
     templates=await idbGet('fpi_tpls')||[];
     const bl=await idbGet('fpi_bandLogo');if(bl)S.bandLogo=bl;
@@ -289,8 +288,6 @@ function bindAll(){
   setupFileUp('bl','bandLogo','fpi_bandLogo','bl-ctrl');
   setupFileUp('vl','venueLogo',null,'vl-ctrl');
   setupBgFileUp();
-  $('f-venuePreset').addEventListener('change',loadVen);
-  $('btn-sv').addEventListener('click',saveVenue);
   $('btn-ex').addEventListener('click',exportFlyer);
   $('btn-ex-all').addEventListener('click',exportAll);
   $('btn-ex-pdf').addEventListener('click',exportPDF);
@@ -353,6 +350,8 @@ function bindAll(){
   document.addEventListener('keydown',handleKey);
   // Resize
   window.addEventListener('resize',()=>{schedRender();syncMobileLayout();});
+  // Dot grid mouse glow
+  $('pp').addEventListener('mousemove',e=>{const r=$('pp').getBoundingClientRect();$('pp').style.setProperty('--mx',e.clientX-r.left+'px');$('pp').style.setProperty('--my',e.clientY-r.top+'px');});
   // Preview zoom
   setupZoom();
   // Mobile tabs
@@ -516,9 +515,6 @@ function fetchImgUrl(url){return new Promise((res,rej)=>{const i=new Image();i.c
 function setSocIcon(n,type){S['social'+n+'Icon']=type;syncChips();saveDraft();schedRender();}
 
 // ── VENUES ──
-function popVenues(){const s=$('f-venuePreset');s.innerHTML='<option value="">-- Saved Venues --</option>'+venues.map((v,i)=>`<option value="${i}">${v.name}</option>`).join('');}
-function loadVen(){const v=venues[parseInt($('f-venuePreset').value)];if(!v)return;S.venue=v.name;S.address=v.address||'';if(v.logo)S.venueLogo=v.logo;if(v.social)S.social2=v.social;syncForm();refUp('vl',S.venueLogo);showEl('vl-ctrl',!!S.venueLogo);saveDraft();schedRender();toast('Venue loaded');}
-function saveVenue(){const n=S.venue.trim();if(!n){toast('Enter venue name first');return;}const e={name:n,address:S.address,logo:S.venueLogo,social:S.social2};const i=venues.findIndex(v=>v.name.toLowerCase()===n.toLowerCase());if(i>=0)venues[i]=e;else venues.push(e);dbSet('fpi_venues',venues,'venues');popVenues();toast(i>=0?'Updated':'Saved');}
 
 // ── SAVED FLYERS ──
 async function saveCurFlyer(){
@@ -599,7 +595,6 @@ function exportBackup(scope){
   const payload={app:'5pi-flyer-studio',version:BK_VERSION,exportedAt:new Date().toISOString(),scope};
   if(scope==='flyers'||scope==='all')payload.flyers=saved;
   if(scope==='templates'||scope==='all')payload.templates=templates;
-  if(scope==='all')payload.venues=venues;
   const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');
@@ -618,15 +613,12 @@ function importBackup(file,scope){
     if(!data||data.app!=='5pi-flyer-studio'){toast('Not a 5PI backup file');return;}
     const incomingFlyers=Array.isArray(data.flyers)?data.flyers:[];
     const incomingTpls=Array.isArray(data.templates)?data.templates:[];
-    const incomingVenues=Array.isArray(data.venues)?data.venues:[];
     const fCount=(scope==='flyers'||scope==='all')?incomingFlyers.length:0;
     const tCount=(scope==='templates'||scope==='all')?incomingTpls.length:0;
-    const vCount=(scope==='all')?incomingVenues.length:0;
-    if(!fCount&&!tCount&&!vCount){toast('Nothing to import for this scope');return;}
+    if(!fCount&&!tCount){toast('Nothing to import for this scope');return;}
     const parts=[];
     if(fCount)parts.push(`${fCount} flyer${fCount>1?'s':''}`);
     if(tCount)parts.push(`${tCount} template${tCount>1?'s':''}`);
-    if(vCount)parts.push(`${vCount} venue${vCount>1?'s':''}`);
     if(!confirm(`Import ${parts.join(', ')}?\n\nOK = merge with existing\nCancel = abort`))return;
     if(scope==='flyers'||scope==='all'){
       const ids=new Set(saved.map(f=>f.id));
@@ -637,11 +629,6 @@ function importBackup(file,scope){
       const ids=new Set(templates.map(t=>t.id));
       incomingTpls.forEach(t=>{if(!t||!t.id||!t.data)return;let id=t.id;while(ids.has(id))id=Date.now()+'_'+Math.random().toString(36).slice(2,7);ids.add(id);templates.push({...t,id});});
       saveTpls();renderTplList();
-    }
-    if(scope==='all'){
-      const names=new Set(venues.map(v=>v.name.toLowerCase()));
-      incomingVenues.forEach(v=>{if(!v||!v.name)return;if(names.has(v.name.toLowerCase()))return;names.add(v.name.toLowerCase());venues.push(v);});
-      dbSet('fpi_venues',venues,'venues');popVenues();
     }
     toast('Imported '+parts.join(', '));
   };
