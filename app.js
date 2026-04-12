@@ -19,6 +19,7 @@ const DFLT={bandName:'FIVE PINTS IN',slogan:'',date:'',doors:'',doorsLabel:'DOOR
   bandLogo:null,venueLogo:null,logoSize:100,logoX:50,logoY:8,vLogoSize:100,vLogoX:50,vLogoY:90,
   bgImage:null,bgDarken:50,bgBlur:0,bgFit:'cover',bgStyle:'none',bgClr:'red',bgFilter:'none',bgOverlay:false,bgOverlayOp:40,
   bgPanX:50,bgPanY:50,
+  dateFormat:'default',
   bandFont:'bebas',bandColor:'#f0ebe6',dateFont:'montserrat',dateColor:'#e63946',venueFont:'bebas',venueColor:'#f0ebe6',
   textBandSize:100,textBandY:30,textDateSize:100,textDateY:50,textVenueSize:100,textVenueY:66,
   social1Icon:'instagram',social2Icon:'instagram',
@@ -60,7 +61,7 @@ function syncUndoBtn(){$('tb-undo').disabled=histIdx<=0;$('tb-redo').disabled=hi
 
 const TF=['bandName','slogan','date','doors','doorsLabel','price','venue','address','social1','social2','qrUrl'];
 const RF=['logoSize','logoX','logoY','vLogoSize','vLogoX','vLogoY','bgDarken','bgBlur','bgOverlayOp','bgPanX','bgPanY','textBandSize','textBandY','textDateSize','textDateY','textVenueSize','textVenueY','qrSize','qrX','qrY','borderWidth'];
-const SF=['bgFit','bgFilter','bandFont','dateFont','venueFont'];
+const SF=['bgFit','bgFilter','bandFont','dateFont','venueFont','dateFormat'];
 
 // ── THEME ──
 const THEME_ORDER=['light','dark','system'];
@@ -497,7 +498,7 @@ async function renderFL(){
   }
   if(dirty)saveFly();
   el.innerHTML=saved.map(f=>{
-    const d=new Date(f.at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+    const d=new Date(f.at).toLocaleDateString('de-DE',{day:'numeric',month:'short',year:'numeric'});
     const thumbHtml=f.thumb?`<img src="${f.thumb}" alt="${esc(f.name)}" style="width:100%;height:100%;object-fit:cover">`:`<span class="card-ph">${esc(f.name.charAt(0))}</span>`;
     return`<div class="card" onclick="loadFlyer('${f.id}')"><div class="card-thumb">${thumbHtml}</div><div class="card-info"><div class="card-name">${esc(f.name)}</div><div class="card-meta">${d}</div><div class="card-acts"><button class="btn btn-s btn-g" onclick="event.stopPropagation();duplicateFlyer('${f.id}')">Dup</button><button class="btn btn-s btn-d" onclick="event.stopPropagation();deleteFlyer('${f.id}')">Del</button></div></div></div>`;
   }).join('');
@@ -528,7 +529,7 @@ async function renderTplList(){
   }
   if(dirty)saveTpls();
   el.innerHTML=templates.map(t=>{
-    const d=new Date(t.at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+    const d=new Date(t.at).toLocaleDateString('de-DE',{day:'numeric',month:'short',year:'numeric'});
     const thumbHtml=t.thumb?`<img src="${t.thumb}" alt="${esc(t.name)}" style="width:100%;height:100%;object-fit:cover">`:`<span class="card-ph">${esc(t.name.charAt(0))}</span>`;
     return`<div class="card" onclick="loadTemplate('${t.id}')"><div class="card-thumb">${thumbHtml}</div><div class="card-info"><div class="card-name">${esc(t.name)}</div><div class="card-meta">${d}</div><div class="card-acts"><button class="btn btn-s btn-d" onclick="event.stopPropagation();deleteTemplate('${t.id}')">Del</button></div></div></div>`;
   }).join('');
@@ -609,7 +610,17 @@ function esc(s){const d=document.createElement('div');d.textContent=s;return d.i
 function showEl(id,v){$(id).style.display=v?'':'none';}
 function f2d(f){return new Promise(r=>{const fr=new FileReader();fr.onload=e=>r(e.target.result);fr.readAsDataURL(f);});}
 async function gI(src){if(!src)return null;if(iC[src])return iC[src];return new Promise(r=>{const i=new Image();i.onload=()=>{iC[src]=i;r(i);};i.onerror=()=>r(null);i.src=src;});}
-function fmtD(ds){if(!ds)return'';const d=new Date(ds+'T12:00:00');if(isNaN(d))return ds;const D=['SUN','MON','TUE','WED','THU','FRI','SAT'],M=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];return`${D[d.getDay()]}  ${d.getDate()} ${M[d.getMonth()]} ${d.getFullYear()}`;}
+function fmtD(ds,fmt){
+  if(!ds)return'';const d=new Date(ds+'T12:00:00');if(isNaN(d))return ds;
+  const f=fmt||S.dateFormat||'default';
+  const D=['SO','MO','DI','MI','DO','FR','SA'];
+  const M=['JAN','FEB','MÄR','APR','MAI','JUN','JUL','AUG','SEP','OKT','NOV','DEZ'];
+  const ML=['JANUAR','FEBRUAR','MÄRZ','APRIL','MAI','JUNI','JULI','AUGUST','SEPTEMBER','OKTOBER','NOVEMBER','DEZEMBER'];
+  const dd=d.getDate(),mm=d.getMonth(),yyyy=d.getFullYear();
+  if(f==='short')return`${dd}.${mm+1}.${yyyy}`;
+  if(f==='long')return`${D[d.getDay()]}  ${dd}. ${ML[mm]} ${yyyy}`;
+  return`${D[d.getDay()]}  ${dd}. ${M[mm]} ${yyyy}`;
+}
 function srand(seed){let s=seed;return()=>{s=(s*16807)%2147483647;return(s-1)/2147483646;};}
 function getFont(id){return FONTS.find(f=>f.id===id)||FONTS[0];}
 
