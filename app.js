@@ -487,9 +487,15 @@ function duplicateFlyer(id){
   saveFly();renderFL();toast('Duplicated');
 }
 function deleteFlyer(id){saved=saved.filter(f=>f.id!==id);saveFly();renderFL();}
-function renderFL(){
+async function renderFL(){
   const el=$('fl-list');
   if(!saved.length){el.innerHTML='<div class="es">No saved flyers yet.</div>';return;}
+  // Generate missing thumbnails
+  let dirty=false;
+  for(const f of saved){
+    if(!f.thumb&&f.data){try{f.thumb=await generateThumb(f.data);dirty=true;}catch(e){}}
+  }
+  if(dirty)saveFly();
   el.innerHTML=saved.map(f=>{
     const d=new Date(f.at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
     const thumbHtml=f.thumb?`<img src="${f.thumb}" alt="${esc(f.name)}" style="width:100%;height:100%;object-fit:cover">`:`<span class="card-ph">${esc(f.name.charAt(0))}</span>`;
@@ -513,9 +519,14 @@ function loadTemplate(id){
   syncAll();saveDraft();closeMo('mo-tpl');toast('Template loaded');
 }
 function deleteTemplate(id){templates=templates.filter(t=>t.id!==id);saveTpls();renderTplList();}
-function renderTplList(){
+async function renderTplList(){
   const el=$('tpl-list');
   if(!templates.length){el.innerHTML='<div class="es">No templates yet. Save your current layout as a template to reuse it.</div>';return;}
+  let dirty=false;
+  for(const t of templates){
+    if(!t.thumb&&t.data){try{t.thumb=await generateThumb(t.data);dirty=true;}catch(e){}}
+  }
+  if(dirty)saveTpls();
   el.innerHTML=templates.map(t=>{
     const d=new Date(t.at).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
     const thumbHtml=t.thumb?`<img src="${t.thumb}" alt="${esc(t.name)}" style="width:100%;height:100%;object-fit:cover">`:`<span class="card-ph">${esc(t.name.charAt(0))}</span>`;
