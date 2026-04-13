@@ -1,6 +1,14 @@
-# Five Pints In — Flyer Studio
+```
+ ███████╗██████╗ ██╗
+ ██╔════╝██╔══██╗██║
+ ███████╗██████╔╝██║
+ ╚════██║██╔═══╝ ██║
+ ███████║██║     ██║
+ ╚══════╝╚═╝     ╚═╝
+ F L Y E R  S T U D I O
+```
 
-A single-file web app for creating on-brand concert flyers. Open `5pi-flyer-studio.html` in any browser — no install, no build step.
+A single-file web app for creating on-brand concert flyers. Open `index.html` in any browser — no install, no build step.
 
 ## Features
 
